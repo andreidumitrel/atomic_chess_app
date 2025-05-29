@@ -1,0 +1,42 @@
+<div class="chess-container">
+      <div class="game-info">
+        <p>Current Player: {{ gameState.currentPlayer | titlecase }}</p>
+        <p *ngIf="gameState.gameOver">Game Over! Winner: {{ gameState.winner || 'Draw' }}</p>
+        <button (click)="resetGame()" class="reset-btn">New Game</button>
+      </div>
+      
+      <div class="chess-board">
+        <div 
+          *ngFor="let row of gameState.board; let i = index"
+          class="chess-row"
+        >
+          <div
+            *ngFor="let square of row; let j = index"
+            class="chess-square"
+            [class.light]="(i + j) % 2 === 0"
+            [class.dark]="(i + j) % 2 === 1"
+            [class.selected]="selectedSquare?.row === i && selectedSquare?.col === j"
+            [class.highlighted]="isHighlighted(i, j)"
+            (click)="onSquareClick(i, j)"
+          >
+            <div 
+              *ngIf="square" 
+              class="chess-piece"
+              [class]="getPieceClass(square)"
+            >
+              {{ getPieceSymbol(square) }}
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="game-controls">
+        <button 
+          (click)="makeAIMove()" 
+          [disabled]="gameState.currentPlayer === 'white' || gameState.gameOver || isThinking"
+          class="ai-move-btn"
+        >
+          {{ isThinking ? 'AI Thinking...' : 'Make AI Move' }}
+        </button>
+      </div>
+    </div>
